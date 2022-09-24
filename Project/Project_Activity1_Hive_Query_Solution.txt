@@ -1,0 +1,28 @@
+CREATE TABLE HiveProjectActivity1 (line STRING);
+LOAD DATA LOCAL INPATH 'Big_Data_Project/episodeIV_dialouges.txt' INTO TABLE HiveProjectActivity1;
+LOAD DATA LOCAL INPATH 'Big_Data_Project/episodeV_dialouges.txt' INTO TABLE HiveProjectActivity1;
+LOAD DATA LOCAL INPATH 'Big_Data_Project/episodeVI_dialouges.txt' INTO TABLE HiveProjectActivity1;
+
+CREATE TABLE HiveProjectActivity1Result AS
+SELECT word, count(1) AS count FROM
+(SELECT split(line, '\t')[0] AS word FROM HiveProjectActivity1) w 
+WHERE instr(word, 'EPISODE 4') == 0 and instr(word, 'EPISODE 5') == 0 and instr(word, 'EPISODE 6') == 0 and length(word) != 0
+GROUP BY word
+ORDER BY count DESC;
+
+
+INSERT OVERWRITE DIRECTORY '/user/root/HDFSHiveProjectActivity1/export'
+SELECT * FROM HiveProjectActivity1Result;
+
+dfs -ls /user/root/HDFSHiveProjectActivity1/export;
+
+dfs -cat /user/root/HDFSHiveProjectActivity1/export/000000_0;
+
+
+INSERT OVERWRITE LOCAL DIRECTORY '/Big_Data_Project/HiveProjectActivity1/export'
+SELECT * FROM HiveProjectActivity1Result;
+
+Exit from hive and execute below command:
+cat /Big_Data_Project/HiveProjectActivity1/export/000000_0 > /Big_Data_Project/HiveProjectActivity1/ProjectActivity1HiveResult.txt
+
+cat /Big_Data_Project/HiveProjectActivity1/ProjectActivity1HiveResult.txt
