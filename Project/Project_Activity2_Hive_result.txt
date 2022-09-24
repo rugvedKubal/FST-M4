@@ -1,0 +1,40 @@
+hive> CREATE TABLE HiveActivity2 (line STRING);
+OK
+Time taken: 0.517 seconds
+hive> LOAD DATA LOCAL INPATH 'Big_Data_Project/episodeIV_dialouges.txt' INTO TABLE HiveActivity2;
+Loading data to table default.hiveactivity2
+OK
+Time taken: 0.508 seconds
+hive> CREATE TABLE HiveActivity2result AS
+    > SELECT count(1) AS count FROM
+    > (SELECT split(line, '\t')[1] AS dialouge FROM HiveActivity2) w
+    > WHERE instr(dialouge, 'Luke') != 0;
+Query ID = root_20220924085902_09d89653-6bf7-459b-8178-4ee3351de18d
+Total jobs = 1
+Launching Job 1 out of 1
+Number of reduce tasks determined at compile time: 1
+In order to change the average load for a reducer (in bytes):
+  set hive.exec.reducers.bytes.per.reducer=<number>
+In order to limit the maximum number of reducers:
+  set hive.exec.reducers.max=<number>
+In order to set a constant number of reducers:
+  set mapreduce.job.reduces=<number>
+Starting Job = job_1664006338484_0009, Tracking URL = http://ba3c9c17ea97:8088/proxy/application_1664006338484_0009/
+Kill Command = /usr/local/hadoop/bin/mapred job  -kill job_1664006338484_0009
+Hadoop job information for Stage-1: number of mappers: 1; number of reducers: 1
+2022-09-24 08:59:16,499 Stage-1 map = 0%,  reduce = 0%
+2022-09-24 08:59:27,223 Stage-1 map = 100%,  reduce = 0%, Cumulative CPU 8.48 sec
+2022-09-24 08:59:37,930 Stage-1 map = 100%,  reduce = 100%, Cumulative CPU 15.47 sec
+MapReduce Total cumulative CPU time: 15 seconds 470 msec
+Ended Job = job_1664006338484_0009
+Moving data to directory hdfs://ba3c9c17ea97:9000/user/hive/warehouse/hiveactivity2result
+MapReduce Jobs Launched:
+Stage-Stage-1: Map: 1  Reduce: 1   Cumulative CPU: 15.47 sec   HDFS Read: 82147 HDFS Write: 86 SUCCESS
+Total MapReduce CPU Time Spent: 15 seconds 470 msec
+OK
+Time taken: 37.301 seconds
+hive> SELECT * FROM HiveActivity2result;
+OK
+56
+Time taken: 0.31 seconds, Fetched: 1 row(s)
+hive>

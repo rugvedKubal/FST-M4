@@ -1,0 +1,7 @@
+CREATE TABLE HiveActivity2 (line STRING);
+LOAD DATA LOCAL INPATH 'Big_Data_Project/episodeIV_dialouges.txt' INTO TABLE HiveActivity2;
+
+CREATE TABLE HiveActivity2result AS
+SELECT count(1) AS count FROM
+(SELECT split(line, '\t')[1] AS dialouge FROM HiveActivity2) w
+WHERE instr(dialouge, 'Luke') != 0;
